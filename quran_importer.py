@@ -1,3 +1,7 @@
+######### UCI ###########
+# start number: 337185
+# end number: 000000
+#########################
 from os import listdir
 from os.path import isfile, join
 from uci import UCI
@@ -12,7 +16,7 @@ ur_quran = open('./data/quran/ur.maududi_rtl.txt', "r", encoding="utf8")
 ayah_batch = fireo.batch()
 count = 0
 line_count = 0
-uci = UCI(246655)
+uci = UCI(337185)
 
 for ar, en, ur in zip(ar_quran, en_quran, ur_quran):
 
