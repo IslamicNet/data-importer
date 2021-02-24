@@ -1,12 +1,9 @@
 ######### UCI ###########
 # start number: 337185
-# end number: 000000
+# end number: 343534
 #########################
-from os import listdir
-from os.path import isfile, join
-from uci import UCI
-
 import fireo
+from uci import UCI
 from models.quran.ayah import Ayah
 
 ar_quran = open('./data/quran/ar.quran_rtl.txt', "r", encoding="utf8")
