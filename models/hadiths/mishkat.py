@@ -9,7 +9,7 @@ class Mishkat(Model):
     book_name = MapField()
     chapter = MapField()
     text = MapField()
-    grade = MapField()
+    is_muttafaqun_alayh = BooleanField()
     is_sahih = BooleanField()
     uci = TextField(required=True)
 

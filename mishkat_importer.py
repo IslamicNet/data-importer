@@ -14,7 +14,7 @@ mishkat = json.load(mishkat_file)
 hadith_batch = fireo.batch()
 count = 0
 overall_count = 0
-uci = UCI(000000)
+uci = UCI(400000)
 
 for hadith in mishkat:
     mishkat = Mishkat()
@@ -36,15 +36,9 @@ for hadith in mishkat:
     }
 
     if hadith['Status_Ref'] == '(مُتَّفق عَلَيْهِ)':
-        mishkat.grade = {
-            "arabic": "مُتَّفق عَلَيْهِ",
-            "english": "Muttafaqun alayh"
-        }
+        mishkat.is_muttafaqun_alayh = True
     else:
-        mishkat.grade = {
-            "arabic": "صَحِيح",
-            "english": "Sahih"
-        }
+        mishkat.is_muttafaqun_alayh = False
 
     mishkat.is_sahih = bool(hadith['Sahih_Zaeef'])
     mishkat.uci = uci.next
@@ -52,6 +46,10 @@ for hadith in mishkat:
 
     count += 1
     overall_count += 1
+
+    if count > 3:
+        break
+        exit
 
     print("Over all complete " + str(overall_count))
 

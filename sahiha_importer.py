@@ -14,7 +14,7 @@ sahiha = json.load(sahiha_file)
 hadith_batch = fireo.batch()
 count = 0
 overall_count = 0
-uci = UCI(377993)
+uci = UCI(400000)
 
 for hadith in sahiha:
     sahiha = Sahiha()
@@ -42,6 +42,10 @@ for hadith in sahiha:
     overall_count += 1
 
     print("Over all complete " + str(overall_count))
+
+    if count > 3:
+        break
+        exit
 
     if count > 400:
         hadith_batch.commit()
