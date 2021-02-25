@@ -8,12 +8,13 @@ def get_hadith_books(hadith_collection):
     books = []
     for hadith in hadith_collection:
         book = {
+            "number": int(hadith['Kitab_ID']),
             "urdu": hadith['Kitab'],
             "english": hadith['Kitab_Eng']
         }
 
-        if hadith['Kitab_Eng'] not in books_added:
-            books_added.append(hadith['Kitab_Eng'])
+        if hadith['Kitab_ID'] not in books_added:
+            books_added.append(hadith['Kitab_ID'])
             books.append(book)
 
     return books
