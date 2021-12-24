@@ -11,6 +11,10 @@ Python Data importer for Islamic content, import data to Firestore e.g Quran, Ha
 # For Firestore
 
 1. Install **Fireo** ORM package for Firestore `pip install fireo`
+2. Start Firestore emulator
+   `firebase emulators:start --only firestore --import=./cache --export-on-exit`
+
+3. `export FIRESTORE_EMULATOR_HOST="localhost:8080"` in python terminal
 
 # For MongoDB
 
@@ -19,8 +23,4 @@ Python Data importer for Islamic content, import data to Firestore e.g Quran, Ha
 
 # Run importer
 
-1. Start Firestore emulator
-   `firebase emulators:start --only firestore --import=./cache --export-on-exit`
-
-2. `export FIRESTORE_EMULATOR_HOST="localhost:8080"` in python terminal
-3. run the importer for example `python quran_importer.py`
+1. run the importer for example `python quran_importer.py`
