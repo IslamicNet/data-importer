@@ -2,15 +2,19 @@
 # start number: 337185
 # end number: 343534
 #########################
-import fireo
+import pymongo
 from uci import UCI
-from models.quran.ayah import Ayah
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["islamic_content_v1"]
+mycol = mydb["quran"]
+
 
 ar_quran = open('./data/quran/ar.quran_rtl.txt', "r", encoding="utf8")
 en_quran = open('./data/quran/en.sahih_ltr.txt', "r", encoding="utf8")
 ur_quran = open('./data/quran/ur.maududi_rtl.txt', "r", encoding="utf8")
 
-ayah_batch = fireo.batch()
+ayah_batch = []
 count = 0
 line_count = 0
 uci = UCI(337185)
@@ -29,24 +33,27 @@ for ar, en, ur in zip(ar_quran, en_quran, ur_quran):
           surah_number + ' ...Ayah ' + ayah_number)
     line_count += 1
 
-    ayah = Ayah()
-    ayah.id = str(surah_number) + '-' + str(ayah_number)
-    ayah.number = int(ayah_number)
-    ayah.surah_number = int(surah_number)
-    ayah.uci = uci.next
-    ayah.content = {
+    ayah = {
+        "_id": uci.next,
+        "ayahId": str(surah_number) + '-' + str(ayah_number),
+        "number": int(ayah_number),
+        "surahNumber": int(surah_number),
         "arabic": ar_text,
-        "urdu": ur_text,
-        "english": en_text
+        "translations": {
+            "urdu": ur_text,
+            "english": en_text
+        }
+
     }
-    ayah.save(batch=ayah_batch)
+    ayah_batch.append(ayah)
 
     count += 1
 
     if(count >= 400):
-        ayah_batch.commit()
+        mycol.insert_many(ayah_batch)
+        ayah_batch = []
         count = 0
 
 print('============Complete=============================')
 print(uci.end_on)
-ayah_batch.commit()
+mycol.insert_many(ayah_batch)
