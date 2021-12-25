@@ -33,8 +33,11 @@ for ar, en, ur in zip(ar_quran, en_quran, ur_quran):
           surah_number + ' ...Ayah ' + ayah_number)
     line_count += 1
 
+    docUCI = uci.next
+
     ayah = {
-        "_id": uci.next,
+        "_id": docUCI,
+        "uci": docUCI,
         "ayahId": str(surah_number) + '-' + str(ayah_number),
         "number": int(ayah_number),
         "surahNumber": int(surah_number),
