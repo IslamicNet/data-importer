@@ -1,6 +1,9 @@
-import fireo
+import pymongo
 import json
-from models.hadiths.hadiths_meta import HadithsMeta
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["islamic_content_v1"]
+mycol = mydb["hadith_books"]
 
 
 def get_hadith_books(hadith_collection):
@@ -22,48 +25,54 @@ def get_hadith_books(hadith_collection):
 
 bukhari_file = open('./data/hadiths/bukhari.json', "r", encoding="utf8")
 bukhari = json.load(bukhari_file)
-hadiths_meta = HadithsMeta()
-hadiths_meta.id = "bukhari"
-hadiths_meta.books = get_hadith_books(bukhari)
-hadiths_meta.save()
+hadith_meta = {
+    "_id": "bukhari",
+    "books": get_hadith_books(bukhari)
+}
+mycol.insert_one(hadith_meta)
 print("Hadith bukhari meta complete")
 
 muslim_file = open('./data/hadiths/muslim.json', "r", encoding="utf8")
 muslim = json.load(muslim_file)
-hadiths_meta = HadithsMeta()
-hadiths_meta.id = "muslim"
-hadiths_meta.books = get_hadith_books(muslim)
-hadiths_meta.save()
+hadith_meta = {
+    "_id": "muslim",
+    "books": get_hadith_books(muslim)
+}
+mycol.insert_one(hadith_meta)
 print("Hadith muslim meta complete")
 
 tirmidhi_file = open('./data/hadiths/tirmidhi.json', "r", encoding="utf8")
 tirmidhi = json.load(tirmidhi_file)
-hadiths_meta = HadithsMeta()
-hadiths_meta.id = "tirmidhi"
-hadiths_meta.books = get_hadith_books(tirmidhi)
-hadiths_meta.save()
+hadith_meta = {
+    "_id": "tirmidhi",
+    "books": get_hadith_books(tirmidhi)
+}
+mycol.insert_one(hadith_meta)
 print("Hadith tirmidhi meta complete")
 
 abu_dawud_file = open('./data/hadiths/abu_dawud.json', "r", encoding="utf8")
 abu_dawud = json.load(abu_dawud_file)
-hadiths_meta = HadithsMeta()
-hadiths_meta.id = "abu_dawud"
-hadiths_meta.books = get_hadith_books(abu_dawud)
-hadiths_meta.save()
+hadith_meta = {
+    "_id": "abu_dawud",
+    "books": get_hadith_books(abu_dawud)
+}
+mycol.insert_one(hadith_meta)
 print("Hadith abu_dawud meta complete")
 
 nasai_file = open('./data/hadiths/nasai.json', "r", encoding="utf8")
 nasai = json.load(nasai_file)
-hadiths_meta = HadithsMeta()
-hadiths_meta.id = "nasai"
-hadiths_meta.books = get_hadith_books(nasai)
-hadiths_meta.save()
+hadith_meta = {
+    "_id": "nasai",
+    "books": get_hadith_books(nasai)
+}
+mycol.insert_one(hadith_meta)
 print("Hadith nasai meta complete")
 
 ibne_maja_file = open('./data/hadiths/ibne_maja.json', "r", encoding="utf8")
 ibne_maja = json.load(ibne_maja_file)
-hadiths_meta = HadithsMeta()
-hadiths_meta.id = "ibne_maja"
-hadiths_meta.books = get_hadith_books(ibne_maja)
-hadiths_meta.save()
+hadith_meta = {
+    "_id": "ibne_maja",
+    "books": get_hadith_books(ibne_maja)
+}
+mycol.insert_one(hadith_meta)
 print("Hadith ibne_maja meta complete")
