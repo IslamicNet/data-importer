@@ -3,40 +3,46 @@
 # end number: 373652
 # Book No: 5
 #########################
-import fireo
+import pymongo
 import json
 from uci import UCI
-from models.hadiths.nasai import Nasai
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["islamic_content_v1"]
+mycol = mydb["nasai"]
 
 nasai_file = open('./data/hadiths/nasai.json', "r", encoding="utf8")
 nasai = json.load(nasai_file)
 
-hadith_batch = fireo.batch()
+hadith_batch = []
 count = 0
 overall_count = 0
 uci = UCI(367891)
 
 for hadith in nasai:
-    nasai = Nasai()
-    nasai.id = str(hadith['hadees_number'])
-    nasai.hadith_number = int(hadith['hadees_number'])
-    nasai.book_number = int(hadith['Kitab_ID'])
-    nasai.book_name = {
-        "urdu": hadith['Kitab'],
-        "english": hadith['Kitab_Eng']
-    }
-    nasai.chapter = {
-        "urdu": hadith['Baab'],
-        "english": hadith['Baab_Eng']
-    }
-    nasai.text = {
+    docUCI = uci.next
+    nasai = {
+        "_id": docUCI,
+        "hadithNumber": int(hadith['hadees_number']),
+        "bookNumber": int(hadith['Kitab_ID']),
+        "bookName": {
+            "urdu": hadith['Kitab'],
+            "english": hadith['Kitab_Eng']
+        },
+        "chapter": {
+            "urdu": hadith['Baab'],
+            "english": hadith['Baab_Eng']
+        },
         "arabic": hadith['Arabic'],
-        "urdu": hadith['Ravi'] + hadith['Urdu'],
-        "english": hadith['English']
+        "trnaslations":  {
+            "urdu": hadith['Ravi'] + hadith['Urdu'],
+            "english": hadith['English']
+        },
+        "isSahih":  bool(hadith['Sahih_Zaeef']),
+        "uci": docUCI
     }
-    nasai.is_sahih = bool(hadith['Sahih_Zaeef'])
-    nasai.uci = uci.next
-    nasai.save(batch=hadith_batch)
+
+    hadith_batch.append(nasai)
 
     count += 1
     overall_count += 1
@@ -44,11 +50,12 @@ for hadith in nasai:
     print("Over all complete " + str(overall_count))
 
     if count > 400:
-        hadith_batch.commit()
+        mycol.insert_many(hadith_batch)
+        hadith_batch = []
         count = 0
 
 print("========== COMPLETE ===========")
 print("Overall count ", overall_count)
 print("UCI end on ", uci.end_on)
 
-hadith_batch.commit()
+mycol.insert_many(hadith_batch)

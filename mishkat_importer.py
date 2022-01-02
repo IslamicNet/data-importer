@@ -3,62 +3,61 @@
 # end number: 000000
 # Book No: 9
 #########################
-import fireo
+import pymongo
 import json
 from uci import UCI
-from models.hadiths.mishkat import Mishkat
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["islamic_content_v1"]
+mycol = mydb["mishkat"]
 
 mishkat_file = open('./data/hadiths/mishkat.json', "r", encoding="utf8")
 mishkat = json.load(mishkat_file)
 
-hadith_batch = fireo.batch()
+hadith_batch = []
 count = 0
 overall_count = 0
 uci = UCI(400000)
 
 for hadith in mishkat:
-    mishkat = Mishkat()
-    mishkat.id = str(hadith['hadees_number'])
-    mishkat.hadith_number = int(hadith['hadees_number'])
-    mishkat.book_number = int(hadith['Kitab_ID'])
-    mishkat.book_name = {
-        "urdu": hadith['Kitab'],
-        "english": hadith['Kitab_Eng']
-    }
-    mishkat.chapter = {
-        "urdu": hadith['Baab'],
-        "english": hadith['Baab_Eng']
-    }
-    mishkat.text = {
+    docUCI = uci.next
+    mishkat = {
+        "_id": docUCI,
+        "hadithNumber": int(hadith['hadees_number']),
+        "bookNumber": int(hadith['Kitab_ID']),
+        "bookName": {
+            "urdu": hadith['Kitab'],
+            "english": hadith['Kitab_Eng']
+        },
+        "chapter": {
+            "urdu": hadith['Baab'],
+            "english": hadith['Baab_Eng']
+        },
         "arabic": hadith['Arabic'],
-        "urdu": hadith['Ravi'] + hadith['Urdu'],
-        "english": hadith['English']
+        "trnaslations":  {
+            "urdu": hadith['Ravi'] + hadith['Urdu'],
+            "english": hadith['English']
+        },
+        "isSahih":  bool(hadith['Sahih_Zaeef']),
+        "uci": docUCI
     }
 
     if hadith['Status_Ref'] == '(مُتَّفق عَلَيْهِ)':
-        mishkat.is_muttafaqun_alayh = True
+        mishkat["is_muttafaqun_alayh"] = True
     else:
-        mishkat.is_muttafaqun_alayh = False
+        mishkat["is_muttafaqun_alayh"] = False
 
-    mishkat.is_sahih = bool(hadith['Sahih_Zaeef'])
-    mishkat.uci = uci.next
-    mishkat.save(batch=hadith_batch)
-
-    count += 1
-    overall_count += 1
-
-    if count > 3:
-        break
-        exit
+    hadith_batch.append(mishkat)
 
     print("Over all complete " + str(overall_count))
 
     if count > 400:
-        hadith_batch.commit()
+        mycol.insert_many(hadith_batch)
+        hadith_batch = []
         count = 0
 
 print("========== COMPLETE ===========")
 print("Overall count ", overall_count)
 print("UCI end on ", uci.end_on)
 
-hadith_batch.commit()
+mycol.insert_many(hadith_batch)
