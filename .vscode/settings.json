@@ -1,14 +1,15 @@
 {
-    "cSpell.words": [
-        "Kitab",
-        "Maja",
-        "Mishkat",
-        "Muttafaqun",
-        "Ravi",
-        "Sahiha",
-        "Zaeef",
-        "abudawud",
-        "alayh",
-        "maududi"
-    ]
+  "cSpell.words": [
+    "Kitab",
+    "Maja",
+    "Mishkat",
+    "Muttafaqun",
+    "Ravi",
+    "Sahiha",
+    "Zaeef",
+    "abudawud",
+    "alayh",
+    "maududi"
+  ],
+  "editor.defaultFormatter": "ms-python.python"
 }
